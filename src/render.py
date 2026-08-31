@@ -96,7 +96,7 @@ def render(executable, ppm_path, png_path):
 
 if __name__ == "__main__":
     render(
-        "./sphere",
-        "./image.ppm",
-        "./sphere.png"
+        "build/raytracer",
+        "output/image.ppm",
+        "output/pic13.png"
     )
