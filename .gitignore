@@ -17,3 +17,5 @@ output/raytracer
 src/image.ppm
 src/image.png
 src/sphere.png
+build_win/
+output/
