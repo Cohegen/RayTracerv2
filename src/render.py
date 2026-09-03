@@ -98,5 +98,5 @@ if __name__ == "__main__":
     render(
         "build/raytracer",
         "output/image.ppm",
-        "output/pic13.png"
+        "output/pic20.png"
     )
