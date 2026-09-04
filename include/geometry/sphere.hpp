@@ -31,8 +31,9 @@ class sphere:public hittable{
         }
         rec.t = root;
         rec.p = r.at(rec.t);
-        Vec3 outward_normal = (rec.p - center) / radius;
-        rec.set_face_normal(r, outward_normal);
+        rec.normal = (rec.p-center) /radius;
+        Vec3 outward_normal = (rec.p - center) /radius;
+        rec.set_face_normal(r,outward_normal);
         rec.mat = mat;
 
         return true;

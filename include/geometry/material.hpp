@@ -82,10 +82,9 @@ class dielectric : public material {
     double refraction_index;
 
     static double reflectance(double cosine,double refraction_index){
-      //using Schlick's approximation for reflectance
+      //using Schlick's appromation for reflectance
       auto r0 = (1-refraction_index) / (1+ refraction_index);
       r0 = r0*r0;
-      auto d = 1.0 - cosine;
-      return r0 + (1-r0)*(d*d*d*d*d);
+      return r0 + (1-r0)*std::pow((1-cosine),5);
     }
 };
