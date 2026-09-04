@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../geometry/hittable_list.hpp"
-#include <vector>
-#include <atomic>
 
 class camera{
     public:
@@ -20,36 +18,21 @@ class camera{
       double focus_dist = 10; //distance from camera lookfrom point to plane
       void render(const hittable& world){
         initialize();
+        
+        std::cout<<"P3\n" << image_width << ' ' << image_height << "\n255\n";
 
-        std::vector<color> framebuffer(image_width * image_height);
-        std::atomic<int> scanlines_remaining(image_height);
-
-        #pragma omp parallel for schedule(dynamic, 1)
         for (int j = 0; j < image_height; j++) {
+            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; i++) {
                 color pixel_color(0,0,0);
-                for(int sample = 0; sample < samples_per_pixel; sample++){
+                for(int sample=0;sample < samples_per_pixel;sample++){
                   ray r = get_ray(i,j);
                   pixel_color += ray_color(r,max_depth,world);
                 }
-                framebuffer[j * image_width + i] = pixel_samples_scale * pixel_color;
-            }
-            int remaining = --scanlines_remaining;
-            if (remaining % 10 == 0 || remaining == 0) {
-                #pragma omp critical
-                {
-                    std::clog << "\rScanlines remaining: " << remaining << ' ' << std::flush;
-                }
+                write_color(std::cout,pixel_samples_scale* pixel_color);
             }
         }
-        std::clog << "\rDone.                    \n";
-
-        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-        for (int j = 0; j < image_height; j++) {
-            for (int i = 0; i < image_width; i++) {
-                write_color(std::cout, framebuffer[j * image_width + i]);
-            }
-        }
+        std::clog << "rDone.       \n";
       }
 
     private:
