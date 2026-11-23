@@ -2,14 +2,19 @@
 
 #include "hittable.hpp"
 #include "material.hpp"
-
+#include "math/vector.hpp"
+#include "rendering/ray.hpp"
 
 class sphere:public hittable{
     public:
-      sphere(const point3& center,double radius,shared_ptr<material>mat):center(center),radius(std::fmax(0,radius)),mat(mat){}
+      sphere(const point3& static_center,double radius,shared_ptr<material>mat):center(static_center,Vec3(0,0,0)),radius(std::fmax(0,radius)),mat(mat){}
 
+      //moving sphere
+      sphere(const point3& center1,const point3& center2,double radius,shared_ptr<material>mat)
+      : center(center1,center2-center1),radius(std::fmax(0,radius)),mat(mat){}
       bool hit(const ray& r, interval ray_t, hit_record& rec) const override{
-        Vec3 oc = center - r.origin();
+        point3 current_center = center.at(r.time());
+        Vec3 oc = current_center - r.origin();
         auto a = r.direction().length_squared();
         auto h = dot(r.direction(),oc);
         auto c = oc.length_squared() - radius*radius;
@@ -31,8 +36,8 @@ class sphere:public hittable{
         }
         rec.t = root;
         rec.p = r.at(rec.t);
-        rec.normal = (rec.p-center) /radius;
-        Vec3 outward_normal = (rec.p - center) /radius;
+        //rec.normal = (rec.p-center) /radius;
+        Vec3 outward_normal = (rec.p - current_center) /radius;
         rec.set_face_normal(r,outward_normal);
         rec.mat = mat;
 
@@ -40,7 +45,7 @@ class sphere:public hittable{
       }
     private:
       //sphere center
-      point3 center;
+      ray  center;
 
       //sphere's radius
       double radius;

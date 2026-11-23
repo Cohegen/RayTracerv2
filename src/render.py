@@ -96,7 +96,7 @@ def render(executable, ppm_path, png_path):
 
 if __name__ == "__main__":
     render(
-        "build/raytracer",
+        "main",
         "output/image.ppm",
-        "output/pic20.png"
+        "output/pic21.png"
     )
